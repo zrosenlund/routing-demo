@@ -5,6 +5,8 @@
  * Date: 1/12/2018
  * Time: 2:06 PM
  */
+    session_start();
+
     ini_set("display_errors", 1);
     error_reporting(E_ALL);
 
@@ -55,8 +57,35 @@
         $f3->set('last', $params['last']);
         $f3->set('message', 'Hi');
 
+        $_SESSION['first'] = $f3->get('first');
+        $_SESSION['last'] = $f3->get('last');
+
         $template = new Template();
         echo $template->render('views/hi.html');
+    }
+    );
+
+    $f3->route('GET /hi-again', function($f3, $params){
+        echo 'Hi again, '.$_SESSION['first'];
+    });
+
+    $f3->route('GET /language/@lang', function($f3, $params) {
+        switch($params['lang']) {
+            case 'swahili':
+                echo 'Jumbo!'; break;
+            case 'spanish':
+                echo 'Hola!'; break;
+            case 'russian':
+                echo 'Privet!'; break;
+            case 'farsi':
+                echo 'Salam!'; break;
+            //Reroute to another page
+            case 'french':
+                $f3->reroute('/');
+            //404 error
+            default:
+                $f3->error(404);
+        }
     }
     );
 
